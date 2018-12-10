@@ -1,0 +1,42 @@
+---
+image: iotivity:linux
+
+stages:
+  - setup
+  - build
+  - test
+
+    # before_script:
+    #   - apt-get update
+    #   - apt-get install -y git scons build-essential
+    #   - apt-get install -y pkg-config uuid-dev libsqlite3-dev
+
+docker-unit-test:
+    image: docker:stable
+    script:
+      - docker build -t iotivity:unit-test .
+
+prepare:
+    stage: setup
+    cache:
+        key: extlibs
+        paths:
+          - extlibs/
+    script:
+      - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1 
+      - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
+      - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
+
+unit-test:
+    image: iotivity:unit-test
+    stage: test
+    # cache:
+    #     key: extlibs
+    #     paths:
+    #       - extlibs/
+    #     policy: pull
+    script:
+      - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1 
+      - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
+      # - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
+      - python auto_build.py unit_tests
