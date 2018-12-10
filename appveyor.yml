@@ -1,0 +1,15 @@
+version: 1.0.{build}
+max_jobs: 1
+image: Visual Studio 2015
+clone_depth: 1
+init:
+- cmd: >-
+    %PYTHON%\\python.exe -m pip install -U setuptools
+
+    %PYTHON%\\python.exe -m pip install -U wheel
+
+    %PYTHON%\\python.exe -m pip install "scons<3"
+environment:
+  PYTHON: C:\\PYTHON27
+build_script:
+- cmd: "@echo off\nset MSVC_VERSION=\"14.0\"   \nset TARGET_ARCH=\"x86\"\nset BUILD_ARGS=-logging -noSecurity \n\ngit clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1\ngit clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4\ngit clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2\n\ncall run.bat build -arch %TARGET_ARCH% %BUILD_ARGS%\ncall run.bat clean"
