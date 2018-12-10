@@ -1,5 +1,5 @@
 ---
-image: iotivity:linux
+image: bramwelt/iotivity:linux
 
 stages:
   - setup
@@ -14,7 +14,7 @@ stages:
 docker-unit-test:
     image: docker:stable
     script:
-      - docker build -t iotivity:unit-test .
+      - docker build -t bramwelt/iotivity:unit-test .
 
 prepare:
     stage: setup
@@ -28,7 +28,7 @@ prepare:
       - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
 
 unit-test:
-    image: iotivity:unit-test
+    image: bramwelt/iotivity:unit-test
     stage: test
     # cache:
     #     key: extlibs
