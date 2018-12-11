@@ -22,6 +22,7 @@ docker-unit-test:
       - docker push $UNIT_TEST_IMAGE
 
 prep-extlibs:
+    image: buildpack-deps:scm
     stage: prepare
     cache:
         paths:
@@ -31,11 +32,6 @@ prep-extlibs:
       - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1 
       - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
       - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
-      - cp ccache /usr/local/bin/
-      - ln -s ccache /usr/local/bin/gcc
-      - ln -s ccache /usr/local/bin/g++
-      - ln -s ccache /usr/local/bin/cc
-      - ln -s ccache /usr/local/bin/c++
 
 unit-test:
     image: $UNIT_TEST_IMAGE
@@ -46,6 +42,11 @@ unit-test:
           - ccache/
     before_script:
       - which gcc
+      # - cp ccache /usr/local/bin/
+      # - ln -s ccache /usr/local/bin/gcc
+      # - ln -s ccache /usr/local/bin/g++
+      # - ln -s ccache /usr/local/bin/cc
+      # - ln -s ccache /usr/local/bin/c++
       - ccache -s
     script:
       - python auto_build.py unit_tests
