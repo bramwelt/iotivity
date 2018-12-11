@@ -5,43 +5,21 @@ services:
   - docker:dind
 
 variables:
-  UNIT_TEST_IMAGE: $CI_REGISTRY_IMAGE/unit-test:$CI_COMMIT_REF_SLUG
+  LINUX_IMAGE: $CI_REGISTRY_IMAGE/unit-test:$CI_COMMIT_REF_SLUG
   CCACHE_DIR: ccache
 
 stages:
   - prepare
   - test
 
-docker-unit-test:
+docker-linux:
     image: docker:stable
     stage: prepare
     before_script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     script:
-      - docker build --pull -t $UNIT_TEST_IMAGE .
-      - docker push $UNIT_TEST_IMAGE
-
-prep-extlibs-git:
-    image: buildpack-deps:scm
-    stage: prepare
-    cache:
-        paths:
-          - extlibs/
-          - ccache/
-    script:
-      - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1
-      - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
-      - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
-
-prep-extlibs-curl:
-    image: buildpack-deps:curl
-    stage: prepare
-    cache:
-        paths:
-          - extlibs/
-          - ccache/
-    script:
-      - wget https://github.com/google/googletest/archive/release-1.7.0.zip extlibs/gtest/release-1.7.0.zip
+      - docker build --pull -t $LINUX_IMAGE .
+      - docker push $LINUX_IMAGE
 
 .job-template: &job_definition
     stage: test
@@ -52,6 +30,7 @@ prep-extlibs-curl:
     before_script:
       - which gcc
       - ccache -s
+      - cp -r /extlibs/ extlibs/
     artifacts:
         paths:
           - '*.memcheck'
@@ -59,30 +38,30 @@ prep-extlibs-curl:
 
 unit-test:
     <<: *job_definition
-    image: $UNIT_TEST_IMAGE
+    image: $LINUX_IMAGE
     script:
       - python auto_build.py unit_tests
 
 linux-secured:
     <<: *job_definition
-    image: $UNIT_TEST_IMAGE
+    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_secured
 
 linux-unsecured:
     <<: *job_definition
-    image: $UNIT_TEST_IMAGE
+    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_unsecured
 
 linux-secured-with-tcp:
     <<: *job_definition
-    image: $UNIT_TEST_IMAGE
+    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_secured_with_tcp
 
 linux-unsecured-with-tcp:
     <<: *job_definition
-    image: $UNIT_TEST_IMAGE
+    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_unsecured_with_tcp
