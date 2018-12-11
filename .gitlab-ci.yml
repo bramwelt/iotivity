@@ -46,27 +46,27 @@ docker-linux:
           - '*.memcheck'
           - out/
 
-unit-test:
+.unit-test:
     <<: *job_definition
     script:
-      - python auto_build.py unit_tests
+      - scons TEST=1 VERBOSE=true RELEASE=false TARGET_TRANSPORT='IP' SECURED=True VALGRIND_CHECKS=False
 
 linux-secured:
     <<: *job_definition
     script:
-      - python auto_build.py linux_secured
+      - scons VERBOSE=true RELEASE=true ERROR_ON_WARN=1
 
 linux-unsecured:
     <<: *job_definition
     script:
-      - python auto_build.py linux_unsecured
+      - scons VERBOSE=true RELEASE=true ERROR_ON_WARN=1 SECURED=0
 
-linux-secured-with-tcp:
+.linux-secured-with-tcp:
     <<: *job_definition
     script:
-      - python auto_build.py linux_secured_with_tcp
+      - scons VERBOSE=true RELEASE=true ERROR_ON_WARN=1 WITH_TCP=1 WITH_CLOUD=1
 
-linux-unsecured-with-tcp:
+.linux-unsecured-with-tcp:
     <<: *job_definition
     script:
-      - python auto_build.py linux_unsecured_with_tcp
+      - scons VERBOSE=true RELEASE=true ERROR_ON_WARN=1 WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0
