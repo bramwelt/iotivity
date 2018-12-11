@@ -13,8 +13,7 @@ stages:
 
 docker-unit-test:
     image: docker:stable
-    stage:
-      - prepare
+    stage: prepare
     before_script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     script:
@@ -22,8 +21,7 @@ docker-unit-test:
       - docker push $UNIT_TEST_IMAGE
 
 prep-extlibs:
-    stage:
-      - prepare
+    stage: prepare
     cache:
         paths:
           - extlibs/
@@ -34,8 +32,7 @@ prep-extlibs:
 
 unit-test:
     image: $UNIT_TEST_IMAGE
-    stage:
-      - test
+    stage: test
     cache:
         paths:
           - extlibs/
