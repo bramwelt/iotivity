@@ -11,7 +11,7 @@ stages:
   - prepare
   - test
 
-docker unit-test:
+docker-unit-test:
     image: docker:stable
     stage:
       - prepare
@@ -21,7 +21,7 @@ docker unit-test:
       - docker build --pull -t $UNIT_TEST_IMAGE .
       - docker push $UNIT_TEST_IMAGE
 
-prep extlibs:
+prep-extlibs:
     stage:
       - prepare
     cache:
