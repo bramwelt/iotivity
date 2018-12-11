@@ -52,7 +52,7 @@ prep-extlibs-curl:
     before_script:
       - which gcc
       - ccache -s
-    archive:
+    artifacts:
         paths:
           - '*.memcheck'
           - out/
