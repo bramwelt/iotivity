@@ -10,6 +10,7 @@ variables:
   CCACHE_COMPILERCHECK: content
 
 stages:
+  - build
   - test
 
 docker-linux:
