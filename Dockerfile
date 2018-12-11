@@ -1,19 +1,20 @@
 FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y \
-  ccache \
-  git \
-  scons \
+  autoconf \
   build-essential \
-  pkg-config \
-  uuid-dev \
+  ccache \
+  chrpath \
+  git \
   libsqlite3-dev \
-  unzip \
   libglib2.0-bin libglib2.0-data libglib2.0-dev \
   libboost* \
   libcurl4-openssl-dev \
-  autoconf \
-  chrpath \
+  pkg-config \
+  scons \
+  uuid-dev \
+  unzip \
+  wget \
   && apt-get autoremove -y && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
