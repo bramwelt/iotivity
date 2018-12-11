@@ -21,7 +21,7 @@ docker-unit-test:
       - docker build --pull -t $UNIT_TEST_IMAGE .
       - docker push $UNIT_TEST_IMAGE
 
-prep-extlibs:
+prep-extlibs-git:
     image: buildpack-deps:scm
     stage: prepare
     cache:
@@ -29,12 +29,21 @@ prep-extlibs:
           - extlibs/
           - ccache/
     script:
-      - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1 
+      - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1
       - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
       - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
 
-unit-test:
-    image: $UNIT_TEST_IMAGE
+prep-extlibs-curl:
+    image: buildpack-deps:curl
+    stage: prepare
+    cache:
+        paths:
+          - extlibs/
+          - ccache/
+    script:
+      - wget https://github.com/google/googletest/archive/release-1.7.0.zip extlibs/gtest/release-1.7.0.zip
+
+.job-template: &job_definition
     stage: test
     cache:
         paths:
@@ -42,11 +51,38 @@ unit-test:
           - ccache/
     before_script:
       - which gcc
-      # - cp ccache /usr/local/bin/
-      # - ln -s ccache /usr/local/bin/gcc
-      # - ln -s ccache /usr/local/bin/g++
-      # - ln -s ccache /usr/local/bin/cc
-      # - ln -s ccache /usr/local/bin/c++
       - ccache -s
+    archive:
+        paths:
+          - '*.memcheck'
+          - out/
+
+unit-test:
+    <<: *job_definition
+    image: $UNIT_TEST_IMAGE
     script:
       - python auto_build.py unit_tests
+
+linux-secured:
+    <<: *job_definition
+    image: $UNIT_TEST_IMAGE
+    script:
+      - python auto_build.py linux_secured
+
+linux-unsecured:
+    <<: *job_definition
+    image: $UNIT_TEST_IMAGE
+    script:
+      - python auto_build.py linux_unsecured
+
+linux-secured-with-tcp:
+    <<: *job_definition
+    image: $UNIT_TEST_IMAGE
+    script:
+      - python auto_build.py linux_secured_with_tcp
+
+linux-unsecured-with-tcp:
+    <<: *job_definition
+    image: $UNIT_TEST_IMAGE
+    script:
+      - python auto_build.py linux_unsecured_with_tcp
