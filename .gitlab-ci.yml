@@ -10,12 +10,13 @@ variables:
   CCACHE_COMPILERCHECK: content
 
 stages:
-  - prepare
   - test
 
 docker-linux:
     image: docker:stable
-    stage: prepare
+    only:
+      - schedules
+    when: manual
     before_script:
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     script:
