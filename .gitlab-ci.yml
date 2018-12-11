@@ -17,7 +17,7 @@ docker-linux:
     image: docker:stable
     stage: prepare
     before_script:
-      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     script:
       - docker build --pull -t $LINUX_IMAGE .
       - docker push $LINUX_IMAGE
@@ -34,7 +34,7 @@ docker-linux:
       - ccache -s
       - which gcc
       - echo $PATH
-      - cp -r /extlibs/ extlibs/
+      - cp -r /extlibs/* extlibs/
       - find extlibs/ -type f -name "*.zip"
     artifacts:
         paths:
