@@ -5,7 +5,8 @@ services:
   - docker:dind
 
 variables:
-  UNIT_TEST_IMAGE: $CI_REGISTRY/unit-test:$CI_COMMIT_REF_SLUG
+  UNIT_TEST_IMAGE: $CI_REGISTRY_IMAGE/unit-test:$CI_COMMIT_REF_SLUG
+  CCACHE_DIR: ccache
 
 stages:
   - prepare
@@ -30,6 +31,13 @@ prep-extlibs:
       - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
       - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
 
+prep-ccache:
+    stage: prepare
+    cache:
+        key: ccache
+        paths:
+          - $CCACHE_DIR
+
 unit-test:
     image: $UNIT_TEST_IMAGE
     stage: test
@@ -37,5 +45,8 @@ unit-test:
         paths:
           - extlibs/
         policy: pull
+    before_script:
+      - which gcc
+      - ccache -s
     script:
       - python auto_build.py unit_tests
