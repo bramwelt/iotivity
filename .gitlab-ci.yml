@@ -7,6 +7,7 @@ services:
 variables:
   LINUX_IMAGE: $CI_REGISTRY_IMAGE/unit-test:$CI_COMMIT_REF_SLUG
   CCACHE_DIR: ccache
+  CCACHE_COMPILERCHECK: content
 
 stages:
   - prepare
@@ -29,8 +30,10 @@ docker-linux:
           - extlibs/
           - ccache/
     before_script:
+      - "export PATH=/usr/lib/ccache:$PATH"
       - ccache -s
       - which gcc
+      - echo $PATH
       - cp -r /extlibs/ extlibs/
       - find extlibs/ -type f -name "*.zip"
     artifacts:

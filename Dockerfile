@@ -18,11 +18,6 @@ RUN apt-get update && apt-get install -y \
   && apt-get autoremove -y && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN ln -s $(which ccache) /usr/local/bin/gcc \
-  ln -s $(which ccache) /usr/local/bin/g++ \
-  ln -s $(which ccache) /usr/local/bin/cc \
-  ln -s $(which ccache) /usr/local/bin/c++
-
 RUN mkdir -p \
   /extlibs/tinycbor \
   /extlibs/libcoap \
