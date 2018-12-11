@@ -5,7 +5,7 @@ services:
   - docker:dind
 
 variables:
-  - UNIT_TEST_IMAGE: $CI_REGISTRY/unit-test:$CI_COMMIT_REF_SLUG
+  UNIT_TEST_IMAGE: $CI_REGISTRY/unit-test:$CI_COMMIT_REF_SLUG
 
 stages:
   - prepare
