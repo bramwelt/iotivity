@@ -1,25 +1,30 @@
 ---
-image: bramwelt/iotivity:linux
+image: docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  - UNIT_TEST_IMAGE: $CI_REGISTRY/unit-test:$CI_COMMIT_REF_SLUG
 
 stages:
-  - setup
-  - build
+  - prepare
   - test
 
-    # before_script:
-    #   - apt-get update
-    #   - apt-get install -y git scons build-essential
-    #   - apt-get install -y pkg-config uuid-dev libsqlite3-dev
-
-docker-unit-test:
+docker unit-test:
     image: docker:stable
+    stage:
+      - prepare
+    before_script:
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     script:
-      - docker build -t bramwelt/iotivity:unit-test .
+      - docker build --pull -t $UNIT_TEST_IMAGE .
+      - docker push $UNIT_TEST_IMAGE
 
-prepare:
-    stage: setup
+prep extlibs:
+    stage:
+      - prepare
     cache:
-        key: extlibs
         paths:
           - extlibs/
     script:
@@ -28,15 +33,12 @@ prepare:
       - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
 
 unit-test:
-    image: bramwelt/iotivity:unit-test
-    stage: test
-    # cache:
-    #     key: extlibs
-    #     paths:
-    #       - extlibs/
-    #     policy: pull
+    image: $UNIT_TEST_IMAGE
+    stage:
+      - test
+    cache:
+        paths:
+          - extlibs/
+        policy: pull
     script:
-      - git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1 
-      - git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
-      # - git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
       - python auto_build.py unit_tests
