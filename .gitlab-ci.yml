@@ -28,6 +28,8 @@ docker-linux:
 .job-template: &job_definition
     stage: test
     image: $LINUX_IMAGE
+    except:
+      - schedules
     cache:
         paths:
           - extlibs/
