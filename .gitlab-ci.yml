@@ -6,12 +6,18 @@ services:
 
 variables:
   LINUX_IMAGE: $CI_REGISTRY_IMAGE/unit-test:$CI_COMMIT_REF_SLUG
-  CCACHE_DIR: ccache
+  CCACHE_BASEDIR: $CI_PROJECT_DIR
+  CCACHE_DIR: $CI_PROJECT_DIR/ccache
   CCACHE_COMPILERCHECK: content
 
 stages:
   - build
   - test
+
+cache:
+    paths:
+      - extlibs/
+      - ccache/
 
 docker-linux:
     image: docker:stable
@@ -30,15 +36,10 @@ docker-linux:
     image: $LINUX_IMAGE
     except:
       - schedules
-    cache:
-        paths:
-          - extlibs/
-          - ccache/
     before_script:
       - "export PATH=/usr/lib/ccache:$PATH"
       - ccache -s
       - which gcc
-      - echo $PATH
       - cp -r /extlibs/* extlibs/
       - find extlibs/ -type f -name "*.zip"
     artifacts:
@@ -54,9 +55,19 @@ docker-linux:
 linux-secured:
     <<: *job_definition
     script:
+      - scons VERBOSE=true RELEASE=false ERROR_ON_WARN=1
+
+linux-secured-release:
+    <<: *job_definition
+    script:
       - scons VERBOSE=true RELEASE=true ERROR_ON_WARN=1
 
 linux-unsecured:
+    <<: *job_definition
+    script:
+      - scons VERBOSE=true RELEASE=false ERROR_ON_WARN=1 SECURED=0
+
+linux-unsecured-release:
     <<: *job_definition
     script:
       - scons VERBOSE=true RELEASE=true ERROR_ON_WARN=1 SECURED=0
