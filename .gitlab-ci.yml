@@ -23,14 +23,16 @@ docker-linux:
 
 .job-template: &job_definition
     stage: test
+    image: $LINUX_IMAGE
     cache:
         paths:
           - extlibs/
           - ccache/
     before_script:
-      - which gcc
       - ccache -s
+      - which gcc
       - cp -r /extlibs/ extlibs/
+      - find extlibs/ -type f -name "*.zip"
     artifacts:
         paths:
           - '*.memcheck'
@@ -38,30 +40,25 @@ docker-linux:
 
 unit-test:
     <<: *job_definition
-    image: $LINUX_IMAGE
     script:
       - python auto_build.py unit_tests
 
 linux-secured:
     <<: *job_definition
-    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_secured
 
 linux-unsecured:
     <<: *job_definition
-    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_unsecured
 
 linux-secured-with-tcp:
     <<: *job_definition
-    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_secured_with_tcp
 
 linux-unsecured-with-tcp:
     <<: *job_definition
-    image: $LINUX_IMAGE
     script:
       - python auto_build.py linux_unsecured_with_tcp
