@@ -51,34 +51,34 @@ docker-linux:
 .unit-test:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY TEST=1 VERBOSE=true RELEASE=false TARGET_TRANSPORT='IP' SECURED=True VALGRIND_CHECKS=False
+      - scons -j $CONCURRENCY WITH_ENV=1 TEST=1 VERBOSE=true RELEASE=false TARGET_TRANSPORT='IP' SECURED=True VALGRIND_CHECKS=False
 
 linux-secured:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY VERBOSE=true RELEASE=false ERROR_ON_WARN=1
+      - scons -j $CONCURRENCY WITH_ENV=1 VERBOSE=true RELEASE=false ERROR_ON_WARN=1
 
 linux-secured-release:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY VERBOSE=true RELEASE=true ERROR_ON_WARN=1
+      - scons -j $CONCURRENCY WITH_ENV=1 VERBOSE=true RELEASE=true ERROR_ON_WARN=1
 
 linux-unsecured:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY VERBOSE=true RELEASE=false ERROR_ON_WARN=1 SECURED=0
+      - scons -j $CONCURRENCY WITH_ENV=1 VERBOSE=true RELEASE=false ERROR_ON_WARN=1 SECURED=0
 
 linux-unsecured-release:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY VERBOSE=true RELEASE=true ERROR_ON_WARN=1 SECURED=0
+      - scons -j $CONCURRENCY WITH_ENV=1 VERBOSE=true RELEASE=true ERROR_ON_WARN=1 SECURED=0
 
 .linux-secured-with-tcp:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY VERBOSE=true RELEASE=true ERROR_ON_WARN=1 WITH_TCP=1 WITH_CLOUD=1
+      - scons -j $CONCURRENCY WITH_ENV=1 VERBOSE=true RELEASE=true ERROR_ON_WARN=1 WITH_TCP=1 WITH_CLOUD=1
 
 .linux-unsecured-with-tcp:
     <<: *job_definition
     script:
-      - scons -j $CONCURRENCY VERBOSE=true RELEASE=true ERROR_ON_WARN=1 WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0
+      - scons -j $CONCURRENCY WITH_ENV=1 VERBOSE=true RELEASE=true ERROR_ON_WARN=1 WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0
