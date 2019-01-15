@@ -5,7 +5,7 @@ services:
   - docker:dind
 
 variables:
-  LINUX_IMAGE: $CI_REGISTRY_IMAGE/unit-test:$CI_COMMIT_REF_SLUG
+  LINUX_IMAGE: $CI_REGISTRY_IMAGE/unit-test:master
   CCACHE_BASEDIR: $CI_PROJECT_DIR
   CCACHE_DIR: $CI_PROJECT_DIR/ccache
   CCACHE_COMPILERCHECK: content
