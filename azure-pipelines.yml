@@ -9,8 +9,7 @@ jobs:
   - job: build
     displayName: 'Build Linux'
     container: 'bramwelt/iotivity:latest'
-    pool:
-      vmImage: 'ubuntu-latest'
+    pool: 'Local'
     variables:
       scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
     strategy:
