@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
   libglib2.0-bin libglib2.0-data libglib2.0-dev \
   libboost* \
   libcurl4-openssl-dev \
+  openjdk-8-jdk-headless \
   pkg-config \
   scons \
   uuid-dev \
@@ -17,6 +18,8 @@ RUN apt-get update && apt-get install -y \
   wget \
   && apt-get autoremove -y && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 RUN mkdir -p \
   /extlibs/tinycbor \
