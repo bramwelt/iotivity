@@ -89,11 +89,11 @@ stages:
             displayName: Login to Docker Hub
             inputs:
               command: login
-              containerRegistry: docker.io
+              containerRegistry: dockerHubConnection1
           - task: Docker@2
             displayName: Build and Push
             inputs:
               command: buildAndPush
-              repository: bramwelt/iotivity
+              repository: bramwelt2/iotivity
               tags: |
                 latest
