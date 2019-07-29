@@ -5,12 +5,17 @@ trigger:
 variables:
   scons.flags: '-Q -j 2'
 
+resources:
+  containers:
+    - container: iotivity
+      image: bramwelt2/iotivity:latest
+
 stages:
   - stage: verify
     jobs:
       - job: verify
         displayName: 'Build Linux'
-        container: 'bramwelt/iotivity:latest'
+        container: iotivity
         pool:
           vmImage: 'ubuntu-latest'
         variables:
@@ -66,7 +71,7 @@ stages:
     jobs:
       - job: unittest
         displayName: 'Unit Test'
-        container: 'bramwelt/iotivity:latest'
+        container: iotivity
         pool:
           vmImage: 'ubuntu-latest'
         variables:
