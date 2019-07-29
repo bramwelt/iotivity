@@ -81,9 +81,9 @@ stages:
         steps:
           - script: cp -r /extlibs/* extlibs/
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
-  - stage: build-container
+  - stage: buildContainer
     jobs:
-      - job: build-container
+      - job: buildContainer
         steps:
           - task: Docker@2
             displayName: Login to Docker Hub
