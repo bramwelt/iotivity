@@ -6,7 +6,7 @@ variables:
   scons.flags: '-Q -j 2'
 
 stages:
-  - verify:
+  - stage: verify
     jobs:
       - job: verify
         displayName: 'Build Linux'
@@ -62,7 +62,7 @@ stages:
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "out/"
             artifact: Build-$(name)
-  - unitetest:
+  - stage: unittest
     jobs:
       - job: unittest
         displayName: 'Unit Test'
@@ -81,7 +81,7 @@ stages:
         steps:
           - script: cp -r /extlibs/* extlibs/
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
-  - build-container:
+  - stage: build-container
     jobs:
       - job: build-container
         steps:
