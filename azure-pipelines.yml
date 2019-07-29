@@ -7,99 +7,93 @@ variables:
 
 stages:
   - verify:
-      jobs:
-        - verify
-        - unittest
+    jobs:
+      - job: verify
+        displayName: 'Build Linux'
+        container: 'bramwelt/iotivity:latest'
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+        strategy:
+          matrix:
+            # TODO: Add Java to Dockerfile
+            # android-secured:
+            # android-unsecured:
+            # simulator:
+            # tizen-secured:
+            # tizen-unsecured:
+            # linux-secured-with-java:
+            # scons.args: "RELEASE=true BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+            # name: 'linux-secured-with-java'
+            # linux-unsecured-with-java
+            linux-unsecured:
+              scons.args: "RELEASE=false SECURED=0"
+              name: 'Unsecured'
+            linux-unsecured-release:
+              scons.args: "RELEASE=true SECURED=0"
+              name: 'Unsecured Release'
+            linux-unsecured-with-rm:
+              scons.args: "RELEASE=false SECURED=0 ROUTING='GW'"
+              name: 'Unsecured with RM'
+            linux-unsecured-with-rm-release:
+              scons.args: "RELEASE=true SECURED=0 ROUTING='GW'"
+              name: 'Unsecured with RM Release'
+            linux-unsecured-with-tcp:
+              scons.args: "RELEASE=false WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
+              name: 'Unsecured with TCP'
+            linux-unsecured-with-tcp-release:
+              scons.args: "RELEASE=true WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
+              name: 'Unsecured with TCP Release'
+            linux-secured:
+              scons.args: "RELEASE=false"
+              name: 'Secured'
+            linux-secured-release:
+              scons.args: "RELEASE=true"
+              name: 'Secured Release'
+            linux-secured-with-tcp:
+              scons.args: "RELEASE=false WITH_TCP=1 WITH_CLOUD=1"
+              name: 'Secured with TCP'
+            linux-secured-with-tcp-release:
+              scons.args: "RELEASE=true WITH_TCP=1 WITH_CLOUD=1"
+              name: 'Secured with TCP Release'
+        steps:
+          - script: cp -r /extlibs/* extlibs/
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - publish: "out/"
+            artifact: Build-$(name)
+  - unitetest:
+    jobs:
+      - job: unittest
+        displayName: 'Unit Test'
+        container: 'bramwelt/iotivity:latest'
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true TEST=1"
+        strategy:
+          matrix:
+            unit-test:
+              scons.args: "RELEASE=false TARGET_TRANSPORT='IP' SECURED=1"
+            unit-test-release:
+              scons.args: "RELEASE=true TARGET_TRANSPORT='IP' SECURED=1"
+              name: 'Release'
+        steps:
+          - script: cp -r /extlibs/* extlibs/
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
   - build-container:
-      jobs:
-        - build-container
-
-jobs:
-  - job: build-container
-    steps:
-      - task: Docker@2
-        displayName: Login to Docker Hub
-        inputs:
-          command: login
-          containerRegistry: docker.io
-      - task: Docker@2
-        displayName: Build and Push
-        inputs:
-          command: buildAndPush
-          repository: bramwelt/iotivity
-          tags: |
-            latest
-  - job: verify
-    displayName: 'Build Linux'
-    container: 'bramwelt/iotivity:latest'
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-    strategy:
-      matrix:
-        # TODO: Add Java to Dockerfile
-        # android-secured:
-        # android-unsecured:
-        # simulator:
-        # tizen-secured:
-        # tizen-unsecured:
-        # linux-secured-with-java:
-        # scons.args: "RELEASE=true BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-        # name: 'linux-secured-with-java'
-        # linux-unsecured-with-java
-        linux-unsecured:
-          scons.args: "RELEASE=false SECURED=0"
-          name: 'Unsecured'
-        linux-unsecured-release:
-          scons.args: "RELEASE=true SECURED=0"
-          name: 'Unsecured Release'
-        linux-unsecured-with-rm:
-          scons.args: "RELEASE=false SECURED=0 ROUTING='GW'"
-          name: 'Unsecured with RM'
-        linux-unsecured-with-rm-release:
-          scons.args: "RELEASE=true SECURED=0 ROUTING='GW'"
-          name: 'Unsecured with RM Release'
-        linux-unsecured-with-tcp:
-          scons.args: "RELEASE=false WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
-          name: 'Unsecured with TCP'
-        linux-unsecured-with-tcp-release:
-          scons.args: "RELEASE=true WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
-          name: 'Unsecured with TCP Release'
-        linux-secured:
-          scons.args: "RELEASE=false"
-          name: 'Secured'
-        linux-secured-release:
-          scons.args: "RELEASE=true"
-          name: 'Secured Release'
-        linux-secured-with-tcp:
-          scons.args: "RELEASE=false WITH_TCP=1 WITH_CLOUD=1"
-          name: 'Secured with TCP'
-        linux-secured-with-tcp-release:
-          scons.args: "RELEASE=true WITH_TCP=1 WITH_CLOUD=1"
-          name: 'Secured with TCP Release'
-
-    steps:
-      - script: cp -r /extlibs/* extlibs/
-      - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
-      - publish: "out/"
-        artifact: Build-$(name)
-
-  - job: unittest
-    displayName: 'Unit Test'
-    container: 'bramwelt/iotivity:latest'
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      scons.preset_args: "WITH_ENV=1 VERBOSE=true TEST=1"
-    strategy:
-      matrix:
-        unit-test:
-          scons.args: "RELEASE=false TARGET_TRANSPORT='IP' SECURED=1"
-        unit-test-release:
-          scons.args: "RELEASE=true TARGET_TRANSPORT='IP' SECURED=1"
-          name: 'Release'
-
-    steps:
-      - script: cp -r /extlibs/* extlibs/
-      - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+    jobs:
+      - job: build-container
+        steps:
+          - task: Docker@2
+            displayName: Login to Docker Hub
+            inputs:
+              command: login
+              containerRegistry: docker.io
+          - task: Docker@2
+            displayName: Build and Push
+            inputs:
+              command: buildAndPush
+              repository: bramwelt/iotivity
+              tags: |
+                latest
