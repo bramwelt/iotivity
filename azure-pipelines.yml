@@ -54,16 +54,16 @@ stages:
           matrix:
             tizen-secured:
               scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'Tizen Secured'
+              name: 'Secured'
             tizen-secured-release:
               scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'Tizen Secured'
+              name: 'Secured Release'
             tizen-unsecured:
               scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'Tizen Unsecured'
+              name: 'Unsecured'
             tizen-unsecured-release:
               scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'Tizen Unsecured'
+              name: 'Unsecured Release'
         steps:
           - script: cp -r /extlibs/* extlibs/
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
