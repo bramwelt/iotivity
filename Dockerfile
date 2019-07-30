@@ -77,3 +77,5 @@ RUN git clone https://github.com/ARMmbed/mbedtls.git /extlibs/mbedtls/mbedtls -b
 RUN git clone https://github.com/jbeder/yaml-cpp.git extlibs/yaml/yaml
 RUN wget https://github.com/google/googletest/archive/release-1.7.0.zip -P /extlibs/gtest/
 RUN wget https://github.com/dascandy/hippomocks/archive/v5.0.zip -P /extlibs/hippomocks/
+
+RUN chmod -R +r /extlibs/android
