@@ -20,6 +20,7 @@ stages:
           vmImage: 'ubuntu-latest'
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+        continueOnError: true
         strategy:
           matrix:
             android-unsecured:
@@ -39,6 +40,7 @@ stages:
     jobs:
       - job: Build
         container: iotivity
+        continueOnError: true
         pool:
           vmImage: 'ubuntu-latest'
         variables:
@@ -67,6 +69,7 @@ stages:
       - job: Build
         pool:
           vmImage: 'vs2017-win2016'
+        continueOnError: true
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
           PYTHON: C:\\PYTHON27
@@ -93,6 +96,7 @@ stages:
     jobs:
       - job: Unittest
         container: iotivity
+        continueOnError: true
         pool:
           vmImage: 'ubuntu-latest'
         variables:
