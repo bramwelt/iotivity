@@ -1,6 +1,11 @@
 ---
 trigger:
-  - master
+  branches:
+    include:
+      - master
+  paths:
+    exclude:
+      - Dockerfile
 
 variables:
   scons.flags: '-Q -j 2'
