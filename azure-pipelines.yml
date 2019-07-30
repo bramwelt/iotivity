@@ -166,6 +166,6 @@ stages:
           - publish: "out/"
             artifact: Unittest-$(name)
           - task: PublishTestResults@2
-            input:
+            inputs:
               testResultsFormat: xUnit
               testResultsFiles: 'out/**.xml'
