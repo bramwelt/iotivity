@@ -120,46 +120,30 @@ stages:
   - stage: Windows
     jobs:
       - job: Build
-        container: iotivity
         pool:
-          vmImage: 'ws2017'
+          vmImage: 'vs2017-win2016'
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+          PYTHON: C:\\PYTHON27
+          MSVC_VERSION: "14.0"
+          TARGET_ARCH: "x86"
+          BUILD_ARGS: "-logging -noSecurity"
         strategy:
           matrix:
             windows1:
               scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
               name: 'windows'
-        steps: |
-            version: 1.0.{build}
-            max_jobs: 1
-            image: Visual Studio 2015
-            clone_depth: 1
-            init:
-            - cmd: >-
-                %PYTHON%\\python.exe -m pip install -U setuptools
-
-                %PYTHON%\\python.exe -m pip install -U wheel
-
-                %PYTHON%\\python.exe -m pip install "scons<3"
-            environment:
-              PYTHON: C:\\PYTHON27
-            build_script:
-            - cmd: >-
-                "@echo off\nset MSVC_VERSION=\"14.0\"   \nset
-                TARGET_ARCH=\"x86\"\nset BUILD_ARGS=-logging -noSecurity
-                \n\ngit clone https://github.com/intel/tinycbor.git
-                extlibs/tinycbor/tinycbor -b v0.5.1\ngit clone
-                https://github.com/dthaler/libcoap.git
-                extlibs/libcoap/libcoap -b IoTivity-1.4\ngit clone
-                https://github.com/ARMmbed/mbedtls.git
-                extlibs/mbedtls/mbedtls -b mbedtls-2.4.2\n\ncall run.bat
-                build -arch %TARGET_ARCH% %BUILD_ARGS%\ncall run.bat
-                clean"
-          - script: cp -r /extlibs/* extlibs/
-          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+        steps:
+          - script: |
+              %PYTHON%\\python.exe -m pip install -U setuptools
+              %PYTHON%\\python.exe -m pip install -U wheel
+              %PYTHON%\\python.exe -m pip install "scons<3"
+          - script: git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1
+          - script: git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
+          - script: git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
+          - script: call run.bat build -arch %TARGET_ARCH% %BUILD_ARGS%
           - publish: "out/"
-            artifact: Tizen-$(name)
+            artifact: Windows-$(name)
   - stage: Unittest
     jobs:
       - job: Unittest
