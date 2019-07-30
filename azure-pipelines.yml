@@ -16,6 +16,33 @@ resources:
       image: bramwelt2/iotivity:latest
 
 stages:
+  - stage: Windows
+    jobs:
+      - job: Build
+        pool:
+          vmImage: 'vs2017-win2016'
+        continueOnError: false
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+          MSVC_VERSION: "14.0"
+          TARGET_ARCH: "x86"
+          BUILD_ARGS: "-logging -noSecurity"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '2.7'
+              addToPath: true
+              architecture: 'x86'
+          - script: |
+              python.exe -m pip install -U setuptools
+              python.exe -m pip install -U wheel
+              python.exe -m pip install "scons<3"
+          - script: git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1
+          - script: git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
+          - script: git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
+          - script: call run.bat build -arch %TARGET_ARCH% %BUILD_ARGS%
+          - publish: "out/"
+            artifact: Windows-$(name)
   - stage: Android
     jobs:
       - job: Build
@@ -69,34 +96,6 @@ stages:
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "out/"
             artifact: Tizen-$(name)
-  - stage: Windows
-    jobs:
-      - job: Build
-        pool:
-          vmImage: 'vs2017-win2016'
-        continueOnError: true
-        variables:
-          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-          PYTHON: C:\\PYTHON27
-          MSVC_VERSION: "14.0"
-          TARGET_ARCH: "x86"
-          BUILD_ARGS: "-logging -noSecurity"
-        strategy:
-          matrix:
-            windows1:
-              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'windows'
-        steps:
-          - script: |
-              %PYTHON%\\python.exe -m pip install -U setuptools
-              %PYTHON%\\python.exe -m pip install -U wheel
-              %PYTHON%\\python.exe -m pip install "scons<3"
-          - script: git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1
-          - script: git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
-          - script: git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
-          - script: call run.bat build -arch %TARGET_ARCH% %BUILD_ARGS%
-          - publish: "out/"
-            artifact: Windows-$(name)
   - stage: Unittest
     jobs:
       - job: Unittest
