@@ -11,10 +11,9 @@ resources:
       image: bramwelt2/iotivity:latest
 
 stages:
-  - stage: verify
+  - stage: Linux
     jobs:
-      - job: verify
-        displayName: 'Build Linux'
+      - job: Build
         container: iotivity
         pool:
           vmImage: 'ubuntu-latest'
@@ -22,16 +21,16 @@ stages:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
         strategy:
           matrix:
-            # TODO: Add Java to Dockerfile
-            # android-secured:
-            # android-unsecured:
-            # simulator:
-            # tizen-secured:
-            # tizen-unsecured:
-            # linux-secured-with-java:
-            # scons.args: "RELEASE=true BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-            # name: 'linux-secured-with-java'
-            # linux-unsecured-with-java
+            linux-secured-with-java:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Secured with Java'
+            linux-unsecured-with-java:
+              scons.args: "RELEASE=true BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Secured with Java Release'
+            simulator:
+              scons.args: "RELEASE=false SIMULATOR=1 SECURED=0 TARGET_TRANSPORT='IP'"
+            simulator-release:
+              scons.args: "RELEASE=true SIMULATOR=1 SECURED=0 TARGET_TRANSPORT='IP'"
             linux-unsecured:
               scons.args: "RELEASE=false SECURED=0"
               name: 'Unsecured'
@@ -66,11 +65,104 @@ stages:
           - script: cp -r /extlibs/* extlibs/
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "out/"
-            artifact: Build-$(name)
-  - stage: unittest
+            artifact: Linux-$(name)
+  - stage: Android
     jobs:
-      - job: unittest
-        displayName: 'Unit Test'
+      - job: Build
+        # TODO: Install Android dependencies
+        container: iotivity
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+        strategy:
+          matrix:
+            android-unsecured:
+              scons.args: "RELEASE=false TARGET_OS=android TARGET_ARCH=armeabi"
+            android-unsecured-release:
+              scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi"
+            android-secured:
+              scons.args: "RELEASE=false TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
+            android-secured-release:
+              scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
+        steps:
+          - script: cp -r /extlibs/* extlibs/
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - publish: "android/android_api/base/build/outputs/**"
+            artifact: Android-$(name)
+  - stage: Tizen
+    jobs:
+      - job: Build
+        container: iotivity
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+        strategy:
+          matrix:
+            tizen-secured:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Tizen Secured'
+            tizen-secured-release:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Tizen Secured'
+            tizen-unsecured:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Tizen Unsecured'
+            tizen-unsecured-release:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Tizen Unsecured'
+        steps:
+          - script: cp -r /extlibs/* extlibs/
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - publish: "out/"
+            artifact: Tizen-$(name)
+  - stage: Windows
+    jobs:
+      - job: Build
+        container: iotivity
+        pool:
+          vmImage: 'ws2017'
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+        strategy:
+          matrix:
+            windows1:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'windows'
+        steps: |
+            version: 1.0.{build}
+            max_jobs: 1
+            image: Visual Studio 2015
+            clone_depth: 1
+            init:
+            - cmd: >-
+                %PYTHON%\\python.exe -m pip install -U setuptools
+
+                %PYTHON%\\python.exe -m pip install -U wheel
+
+                %PYTHON%\\python.exe -m pip install "scons<3"
+            environment:
+              PYTHON: C:\\PYTHON27
+            build_script:
+            - cmd: >-
+                "@echo off\nset MSVC_VERSION=\"14.0\"   \nset
+                TARGET_ARCH=\"x86\"\nset BUILD_ARGS=-logging -noSecurity
+                \n\ngit clone https://github.com/intel/tinycbor.git
+                extlibs/tinycbor/tinycbor -b v0.5.1\ngit clone
+                https://github.com/dthaler/libcoap.git
+                extlibs/libcoap/libcoap -b IoTivity-1.4\ngit clone
+                https://github.com/ARMmbed/mbedtls.git
+                extlibs/mbedtls/mbedtls -b mbedtls-2.4.2\n\ncall run.bat
+                build -arch %TARGET_ARCH% %BUILD_ARGS%\ncall run.bat
+                clean"
+          - script: cp -r /extlibs/* extlibs/
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - publish: "out/"
+            artifact: Tizen-$(name)
+  - stage: Unittest
+    jobs:
+      - job: Unittest
         container: iotivity
         pool:
           vmImage: 'ubuntu-latest'
@@ -78,11 +170,18 @@ stages:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true TEST=1"
         strategy:
           matrix:
-            unit-test:
+            unit-test-unsecured:
+              scons.args: "RELEASE=false TARGET_TRANSPORT='IP' SECURED=0"
+              name: 'Unsecured'
+            unit-test-secured:
               scons.args: "RELEASE=false TARGET_TRANSPORT='IP' SECURED=1"
-            unit-test-release:
-              scons.args: "RELEASE=true TARGET_TRANSPORT='IP' SECURED=1"
-              name: 'Release'
+              name: 'Secured'
         steps:
           - script: cp -r /extlibs/* extlibs/
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - publish: "out/"
+            artifact: Unittest-$(name)
+          - task: PublishTestResults@2
+            input:
+              testResultsFormat: xUnit
+              testResultsFiles: 'out/**.xml'
