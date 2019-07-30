@@ -11,61 +11,6 @@ resources:
       image: bramwelt2/iotivity:latest
 
 stages:
-  - stage: Linux
-    jobs:
-      - job: Build
-        container: iotivity
-        pool:
-          vmImage: 'ubuntu-latest'
-        variables:
-          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-        strategy:
-          matrix:
-            linux-secured-with-java:
-              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'Secured with Java'
-            linux-unsecured-with-java:
-              scons.args: "RELEASE=true BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
-              name: 'Secured with Java Release'
-            simulator:
-              scons.args: "RELEASE=false SIMULATOR=1 SECURED=0 TARGET_TRANSPORT='IP'"
-            simulator-release:
-              scons.args: "RELEASE=true SIMULATOR=1 SECURED=0 TARGET_TRANSPORT='IP'"
-            linux-unsecured:
-              scons.args: "RELEASE=false SECURED=0"
-              name: 'Unsecured'
-            linux-unsecured-release:
-              scons.args: "RELEASE=true SECURED=0"
-              name: 'Unsecured Release'
-            linux-unsecured-with-rm:
-              scons.args: "RELEASE=false SECURED=0 ROUTING='GW'"
-              name: 'Unsecured with RM'
-            linux-unsecured-with-rm-release:
-              scons.args: "RELEASE=true SECURED=0 ROUTING='GW'"
-              name: 'Unsecured with RM Release'
-            linux-unsecured-with-tcp:
-              scons.args: "RELEASE=false WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
-              name: 'Unsecured with TCP'
-            linux-unsecured-with-tcp-release:
-              scons.args: "RELEASE=true WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
-              name: 'Unsecured with TCP Release'
-            linux-secured:
-              scons.args: "RELEASE=false"
-              name: 'Secured'
-            linux-secured-release:
-              scons.args: "RELEASE=true"
-              name: 'Secured Release'
-            linux-secured-with-tcp:
-              scons.args: "RELEASE=false WITH_TCP=1 WITH_CLOUD=1"
-              name: 'Secured with TCP'
-            linux-secured-with-tcp-release:
-              scons.args: "RELEASE=true WITH_TCP=1 WITH_CLOUD=1"
-              name: 'Secured with TCP Release'
-        steps:
-          - script: cp -r /extlibs/* extlibs/
-          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
-          - publish: "out/"
-            artifact: Linux-$(name)
   - stage: Android
     jobs:
       - job: Build
@@ -169,3 +114,58 @@ stages:
             inputs:
               testResultsFormat: xUnit
               testResultsFiles: 'out/**.xml'
+  - stage: Linux
+    jobs:
+      - job: Build
+        container: iotivity
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+        strategy:
+          matrix:
+            linux-secured-with-java:
+              scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Secured with Java'
+            linux-unsecured-with-java:
+              scons.args: "RELEASE=true BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
+              name: 'Secured with Java Release'
+            simulator:
+              scons.args: "RELEASE=false SIMULATOR=1 SECURED=0 TARGET_TRANSPORT='IP'"
+            simulator-release:
+              scons.args: "RELEASE=true SIMULATOR=1 SECURED=0 TARGET_TRANSPORT='IP'"
+            linux-unsecured:
+              scons.args: "RELEASE=false SECURED=0"
+              name: 'Unsecured'
+            linux-unsecured-release:
+              scons.args: "RELEASE=true SECURED=0"
+              name: 'Unsecured Release'
+            linux-unsecured-with-rm:
+              scons.args: "RELEASE=false SECURED=0 ROUTING='GW'"
+              name: 'Unsecured with RM'
+            linux-unsecured-with-rm-release:
+              scons.args: "RELEASE=true SECURED=0 ROUTING='GW'"
+              name: 'Unsecured with RM Release'
+            linux-unsecured-with-tcp:
+              scons.args: "RELEASE=false WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
+              name: 'Unsecured with TCP'
+            linux-unsecured-with-tcp-release:
+              scons.args: "RELEASE=true WITH_TCP=1 TARGET_TRANSPORT='IP' SECURED=0"
+              name: 'Unsecured with TCP Release'
+            linux-secured:
+              scons.args: "RELEASE=false"
+              name: 'Secured'
+            linux-secured-release:
+              scons.args: "RELEASE=true"
+              name: 'Secured Release'
+            linux-secured-with-tcp:
+              scons.args: "RELEASE=false WITH_TCP=1 WITH_CLOUD=1"
+              name: 'Secured with TCP'
+            linux-secured-with-tcp-release:
+              scons.args: "RELEASE=true WITH_TCP=1 WITH_CLOUD=1"
+              name: 'Secured with TCP Release'
+        steps:
+          - script: cp -r /extlibs/* extlibs/
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - publish: "out/"
+            artifact: Linux-$(name)
