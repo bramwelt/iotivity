@@ -31,5 +31,6 @@ RUN mkdir -p \
 RUN git clone https://github.com/intel/tinycbor.git /extlibs/tinycbor/tinycbor -b v0.5.1
 RUN git clone https://github.com/dthaler/libcoap.git /extlibs/libcoap/libcoap -b IoTivity-1.4
 RUN git clone https://github.com/ARMmbed/mbedtls.git /extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
+RUN git clone https://github.com/jbeder/yaml-cpp.git extlibs/yaml/yaml
 RUN wget https://github.com/google/googletest/archive/release-1.7.0.zip -P /extlibs/gtest/
 RUN wget https://github.com/dascandy/hippomocks/archive/v5.0.zip -P /extlibs/hippomocks/
