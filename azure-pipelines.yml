@@ -42,7 +42,8 @@ stages:
             android-secured-release:
               scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
-          - script: cp -r /extlibs/* extlibs/
+          - script: sudo cp -r /extlibs/* extlibs/
+          - script: sudo chown -R $USER extlibs/
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
             artifact: Android-$(name)
