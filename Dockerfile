@@ -46,29 +46,21 @@ WORKDIR /extlibs/android/ndk
 RUN wget -nv "http://dl.google.com/android/ndk/android-ndk-$ANDROID_NDK_VERSION-linux-x86_64.bin" \
 && chmod +x "android-ndk-$ANDROID_NDK_VERSION-linux-x86_64.bin" \
 && "./android-ndk-$ANDROID_NDK_VERSION-linux-x86_64.bin" \
-&& find /extlibs/android/ndk -type f -exec chmod 644 {} \; \
-&& find /extlibs/android/ndk -type d -exec chmod 755 {} \; \
 && rm "android-ndk-$ANDROID_NDK_VERSION-linux-x86_64.bin"
 WORKDIR /extlibs/android/sdk
 RUN wget -nv "http://dl.google.com/android/android-sdk_$ANDROID_SDK_VERSION-linux.tgz" \
 && tar zxvf android-sdk_$ANDROID_SDK_VERSION-linux.tgz \
 && mv android-sdk-linux android-sdk_$ANDROID_SDK_VERSION \
-&& find /extlibs/android/sdk -type f -exec chmod 644 {} \; \
-&& find /extlibs/android/sdk -type d -exec chmod 755 {} \; \
 && rm android-sdk_$ANDROID_SDK_VERSION-linux.tgz
 WORKDIR /extlibs/android/sdk/android-sdk_$ANDROID_SDK_VERSION
 RUN wget -nv "http://dl.google.com/android/repository/android-$ANDROID_PLATFORM_API_VERSION.zip" \
 && unzip android-$ANDROID_PLATFORM_API_VERSION.zip -d platforms \
 && mv "platforms/android-5.0.1" "platforms/android-${ANDROID_PLATFORM_API_VERSION%%_}" \
-&& find /extlibs/android/sdk -type f -exec chmod 644 {} \; \
-&& find /extlibs/android/sdk -type d -exec chmod 755 {} \; \
 && rm android-$ANDROID_PLATFORM_API_VERSION.zip
 WORKDIR /extlibs/android/sdk
 RUN wget -nv "https://dl.google.com/android/repository/build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip" \
 && unzip "build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip" -d build-tools/ \
 && mv "build-tools/android-4.4W" "build-tools/$ANDROID_BUILDTOOLS_EXP_VERSION" \
-&& find /extlibs/android/sdk -type f -exec chmod 644 {} \; \
-&& find /extlibs/android/sdk -type d -exec chmod 755 {} \; \
 && rm build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip
 WORKDIR /extlibs/android/gradle
 RUN wget -nv "https://services.gradle.org/distributions/gradle-$ANDROID_GRADLE_VERSION-all.zip" \
@@ -82,5 +74,3 @@ RUN git clone https://github.com/ARMmbed/mbedtls.git /extlibs/mbedtls/mbedtls -b
 RUN git clone https://github.com/jbeder/yaml-cpp.git extlibs/yaml/yaml
 RUN wget https://github.com/google/googletest/archive/release-1.7.0.zip -P /extlibs/gtest/
 RUN wget https://github.com/dascandy/hippomocks/archive/v5.0.zip -P /extlibs/hippomocks/
-
-RUN chmod -R 777 /extlibs/android
