@@ -7,6 +7,15 @@ trigger:
     include:
       - Dockerfile
 
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - Dockefile
+
 
 schedules:
   - cron: "0 12 * * 0"

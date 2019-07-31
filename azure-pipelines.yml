@@ -7,6 +7,12 @@ trigger:
     exclude:
       - Dockerfile
 
+pr:
+  autoCancel: true
+  paths:
+    exclude:
+      - Dockerfile
+
 variables:
   scons.flags: '-Q -j 2'
 
