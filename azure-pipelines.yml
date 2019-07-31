@@ -19,13 +19,12 @@ stages:
   - stage: Android
     jobs:
       - job: Build
-        # TODO: Install Android dependencies
         container: iotivity
         pool:
           vmImage: 'ubuntu-latest'
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-        continueOnError: true
+        continueOnError: false
         strategy:
           matrix:
             android-unsecured:
