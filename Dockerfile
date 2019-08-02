@@ -65,7 +65,7 @@ RUN wget -nv "http://dl.google.com/android/android-sdk_$ANDROID_SDK_VERSION-linu
 WORKDIR /home/iotivity/extlibs/android/sdk/android-sdk_$ANDROID_SDK_VERSION
 RUN wget -nv "http://dl.google.com/android/repository/android-$ANDROID_PLATFORM_API_VERSION.zip" \
 && unzip android-$ANDROID_PLATFORM_API_VERSION.zip -d platforms \
-&& mv "platforms/android-5.0.1" "platforms/android-${ANDROID_PLATFORM_API_VERSION%%_}" \
+&& mv "platforms/android-5.0.1" "platforms/android-${ANDROID_PLATFORM_API_VERSION%%_*}" \
 && rm android-$ANDROID_PLATFORM_API_VERSION.zip
 RUN wget -nv "https://dl.google.com/android/repository/build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip" \
 && unzip "build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip" -d build-tools/ \
@@ -84,5 +84,7 @@ RUN git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b 
 RUN git clone https://github.com/jbeder/yaml-cpp.git extlibs/yaml/yaml
 RUN wget https://github.com/google/googletest/archive/release-1.7.0.zip -P extlibs/gtest/
 RUN wget https://github.com/dascandy/hippomocks/archive/v5.0.zip -P extlibs/hippomocks/
+
+# TODO: Boost
 
 USER root
