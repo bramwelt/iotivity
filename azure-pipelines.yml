@@ -2,6 +2,8 @@
 pr:
   autoCancel: true
   paths:
+    include:
+      - '*'
     exclude:
       - Dockerfile
 
