@@ -8,7 +8,7 @@ variables:
 resources:
   containers:
     - container: iotivity
-      image: bramwelt2/iotivity:latest
+      image: bramwelt/iotivity:latest
 
 stages:
   - stage: Android

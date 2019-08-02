@@ -21,6 +21,6 @@ jobs:
         displayName: Build and Push
         inputs:
           command: buildAndPush
-          repository: bramwelt2/iotivity
+          repository: bramwelt/iotivity
           tags: |
             latest
