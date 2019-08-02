@@ -27,7 +27,7 @@ stages:
           vmImage: 'ubuntu-latest'
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-        continueOnError: false
+        continueOnError: true
         strategy:
           matrix:
             android-unsecured:
@@ -39,6 +39,11 @@ stages:
             android-secured-release:
               scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
+          # Set the ANDROID_* variables so Scons has access to them
+          - script: |
+            echo '##vso[task.setvariable variable=ANDROID_SDK_HOME]$(Build.Repository.LocalPath/extlibs/android/sdk'
+            echo '##vso[task.setvariable variable=ANDROID_NDK_HOME]$(Build.Repository.LocalPath/extlibs/android/ndk'
+            echo '##vso[task.setvariable variable=ANDROID_HOME]$(Build.Repository.LocalPath/extlibs/android'
           - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
@@ -51,7 +56,7 @@ stages:
           # TODO: Matrix
           # matrix amd64, x86, vs207, vs2015
           # 'vs2015-win2012r2'
-        continueOnError: false
+        continueOnError: true
         variables:
           # TODO: Verify if all these work/needed?
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"

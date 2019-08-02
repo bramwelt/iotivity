@@ -67,12 +67,11 @@ RUN wget -nv "http://dl.google.com/android/repository/android-$ANDROID_PLATFORM_
 && unzip android-$ANDROID_PLATFORM_API_VERSION.zip -d platforms \
 && mv "platforms/android-5.0.1" "platforms/android-${ANDROID_PLATFORM_API_VERSION%%_}" \
 && rm android-$ANDROID_PLATFORM_API_VERSION.zip
-
-WORKDIR /home/iotivity/extlibs/android/sdk
 RUN wget -nv "https://dl.google.com/android/repository/build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip" \
 && unzip "build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip" -d build-tools/ \
 && mv "build-tools/android-4.4W" "build-tools/$ANDROID_BUILDTOOLS_EXP_VERSION" \
 && rm build-tools_$ANDROID_BUILDTOOLS_VERSION-linux.zip
+
 WORKDIR /home/iotivity/extlibs/android/gradle
 RUN wget -nv "https://services.gradle.org/distributions/gradle-$ANDROID_GRADLE_VERSION-all.zip" \
 && unzip gradle-$ANDROID_GRADLE_VERSION-all.zip \
