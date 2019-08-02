@@ -31,12 +31,7 @@ stages:
             android-secured-release:
               scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
-          - script: |
-              pwd
-              ls
-              ls $(Agent.BuildDirectory)
-              mkdir -p $(Agent.BuildDirectory)/extlibs
-          - script: cp -r /home/iotivity/extlibs/* $(Agent.BuildDirectory)/extlibs
+          - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
             artifact: Android-$(name)
