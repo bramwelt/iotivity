@@ -26,7 +26,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 # Create Group & User
 RUN groupadd -o -g 1001 iotivity
-RUN useradd -m -u /home/iotivity -U -u 1001 -g 1001 -s /bin/bash -G sudo iotivity
+RUN useradd -m -d /home/iotivity -u 1001 -g 1001 -s /bin/bash -G sudo iotivity
 
 USER iotivity
 WORKDIR /home/iotivity
