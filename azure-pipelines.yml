@@ -38,8 +38,6 @@ stages:
           - script: sudo chmod 755 /extlibs/android/sdk/android-sdk_r24.2/platforms/android-21_r02
           - script: sudo chmod 755 /extlibs/android/sdk/build-tools/20.0.0
           - script: sudo cp -r /extlibs/* extlibs/
-          - script: sudo chown -R $USER extlibs/*
-          - script: chmod 755 extlibs/android
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
             artifact: Android-$(name)
