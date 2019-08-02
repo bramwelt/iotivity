@@ -1,9 +1,6 @@
 ---
-pr:
-  autoCancel: true
-  paths:
-    include:
-      - Dockefile
+trigger: none
+pr: none
 
 schedules:
   - cron: "0 12 * * 0"

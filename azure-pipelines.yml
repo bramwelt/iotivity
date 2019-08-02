@@ -1,11 +1,6 @@
 ---
-pr:
-  autoCancel: true
-  paths:
-    include:
-      - '*'
-    exclude:
-      - Dockerfile
+trigger: none
+pr: none
 
 variables:
   scons.flags: '-Q -j 2'
