@@ -70,7 +70,6 @@ stages:
               python.exe -m pip install "scons<3"
             # TODO:
             # sqlite
-            # boost
             # gunit
             # hippomocks
             # rapidjson
@@ -104,7 +103,7 @@ stages:
               scons.args: "RELEASE=false BUILD_JAVA=1 TARGET_TRANSPORT='IP'"
               name: 'Unsecured Release'
         steps:
-          - script: cp -r /extlibs/* extlibs/
+          - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "out/"
             artifact: Tizen-$(name)
@@ -126,7 +125,7 @@ stages:
               scons.args: "RELEASE=false TARGET_TRANSPORT='IP' SECURED=1"
               name: 'Secured'
         steps:
-          - script: cp -r /extlibs/* extlibs/
+          - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "out/"
             artifact: Unittest-$(name)
@@ -185,7 +184,7 @@ stages:
               scons.args: "RELEASE=true WITH_TCP=1 WITH_CLOUD=1"
               name: 'Secured with TCP Release'
         steps:
-          - script: cp -r /extlibs/* extlibs/
+          - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "out/"
             artifact: Linux-$(name)
