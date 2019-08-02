@@ -32,11 +32,9 @@ stages:
               scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
           - script: pwd
-          - checkout: self
-            path: /home/iotivity/src
+          - script: cp -r /home/iotivity/extlibs/* $(Agent.BuildDirectory)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
-            workingDirectory: /home/iotivity/src
-          - publish: "/home/iotivity/src/android/android_api/base/build/outputs/**"
+          - publish: "android/android_api/base/build/outputs/**"
             artifact: Android-$(name)
   - stage: Windows
     jobs:
