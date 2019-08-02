@@ -32,6 +32,9 @@ stages:
               scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
           - script: pwd
+          - script: ls
+          - script: ls s/ || true
+          - script: mkdir -p $(Agent.BuildDirectory/extlibs
           - script: cp -r /home/iotivity/extlibs/* $(Agent.BuildDirectory)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
