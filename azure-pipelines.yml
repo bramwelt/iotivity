@@ -21,6 +21,7 @@ resources:
 # yamllint disable rule:line-length
 stages:
   - stage: Android
+    dependsOn: []
     jobs:
       - job: Build
         container: iotivity
@@ -55,6 +56,7 @@ stages:
               testResultsFormat: "JUnit"
               testResultsFiles: "**/build/output/*.xml"
   - stage: Windows
+    dependsOn: []
     jobs:
       - job: Build
         pool:
@@ -104,6 +106,7 @@ stages:
           - publish: "out/"
             artifact: Windows-$(name)
   - stage: Tizen
+    dependsOn: []
     jobs:
       - job: Build
         container: iotivity
@@ -132,6 +135,7 @@ stages:
           - publish: "out/"
             artifact: Tizen-$(name)
   - stage: Unittest
+    dependsOn: []
     jobs:
       - job: Unittest
         container: iotivity
@@ -158,6 +162,7 @@ stages:
               testResultsFormat: xUnit
               testResultsFiles: 'out/**/test_out/*.xml'
   - stage: Linux
+    dependsOn: []
     jobs:
       - job: Build
         container: iotivity
