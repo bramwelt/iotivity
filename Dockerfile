@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
   chrpath \
   git \
   gbs \
-  lib32bz2-dev \
+  libbz2-1.0 \
   lib32gcc1 \
   lib32gomp1 \
   lib32ncurses5 \
