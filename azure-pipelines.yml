@@ -41,6 +41,9 @@ stages:
               #   scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
           - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
+          - script: |
+              ls -l $(Build.Repository.LocalPath)/extlibs/android/sdk/android-sdk_r24.2/build-tools/20.0.0/aapt
+              exit 0
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
             artifact: Android-$(name)
