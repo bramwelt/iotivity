@@ -9,11 +9,11 @@ RUN apt-get update && apt-get install -y \
   chrpath \
   git \
   gbs \
-  lib32bz2-dev
+  lib32bz2-dev \
   lib32gcc1 \
   lib32gomp1 \
   lib32ncurses5 \
-  lib32stdc++6
+  lib32stdc++6 \
   lib32z1 \
   lib32z1-dev \
   libboost* \
