@@ -67,11 +67,11 @@ stages:
         strategy:
           matrix:
             windows_2017_x86:
-              MSVC_VERSION: "14.0"
+              MSVC_VERSION: "15.9"
               TARGET_ARCH: "x86"
               windowsImage: 'vs2017-win2016'
             windows_2017_amd64:
-              MSVC_VERSION: "14.0"
+              MSVC_VERSION: "15.9"
               TARGET_ARCH: "amd64"
               windowsImage: 'vs2017-win2016'
             windows_2015_x86:
