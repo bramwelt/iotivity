@@ -9,10 +9,20 @@ RUN apt-get update && apt-get install -y \
   chrpath \
   git \
   gbs \
-  libsqlite3-dev \
-  libglib2.0-bin libglib2.0-data libglib2.0-dev \
+  lib32bz2-dev
+  lib32gcc1 \
+  lib32gomp1 \
+  lib32ncurses5 \
+  lib32stdc++6
+  lib32z1 \
+  lib32z1-dev \
   libboost* \
+  libc6-i386 \
   libcurl4-openssl-dev \
+  libglib2.0-bin \
+  libglib2.0-data \
+  libglib2.0-dev \
+  libsqlite3-dev \
   openjdk-8-jdk-headless \
   pkg-config \
   scons \
