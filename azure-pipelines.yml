@@ -28,7 +28,7 @@ stages:
           vmImage: 'ubuntu-latest'
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-        continueOnError: false
+        continueOnError: true
         strategy:
           matrix:
             android-unsecured:
@@ -46,10 +46,10 @@ stages:
         steps:
           - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
           - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
-          - publish: "out/android/**"
+          - publish: "out/android/"
             artifact: Android-$(name)
-          - publish: "**/build/outputs/*.html"
-            artifact: Android-Lint-$(name)
+          # - publish: "**/build/outputs/*.html"
+          # - artifact: Android-Lint-$(name)
           - task: PublishTestResults@2
             inputs:
               testResultsFormat: "JUnit"
