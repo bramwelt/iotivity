@@ -58,17 +58,30 @@ stages:
     jobs:
       - job: Build
         pool:
-          vmImage: 'vs2017-win2016'
-          # TODO: Matrix
-          # matrix amd64, x86, vs207, vs2015
-          # 'vs2015-win2012r2'
+          vmImage: $(windowsImage)
         continueOnError: true
         variables:
           # TODO: Verify if all these work/needed?
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-          MSVC_VERSION: "14.0"
-          TARGET_ARCH: "x86"
           BUILD_ARGS: "-logging -noSecurity"
+        strategy:
+          matrix:
+            windows_2017_x86:
+              MSVC_VERSION: "14.0"
+              TARGET_ARCH: "x86"
+              windowsImage: 'vs2017-win2016'
+            windows_2017_amd64:
+              MSVC_VERSION: "14.0"
+              TARGET_ARCH: "amd64"
+              windowsImage: 'vs2017-win2016'
+            windows_2015_x86:
+              MSVC_VERSION: "14.0"
+              TARGET_ARCH: "x86"
+              windowsImage: 'vs2015-win2012r2'
+            windows_2015_amd64:
+              MSVC_VERSION: "14.0"
+              TARGET_ARCH: "amd64"
+              windowsImage: 'vs2015-win2012r2'
         steps:
           - task: UsePythonVersion@0
             inputs:
