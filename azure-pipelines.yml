@@ -28,25 +28,20 @@ stages:
           vmImage: 'ubuntu-latest'
         variables:
           scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-        continueOnError: true
+        continueOnError: false
         strategy:
           matrix:
             android-unsecured:
               scons.args: "RELEASE=false TARGET_OS=android TARGET_ARCH=armeabi"
-            android-unsecured-release:
-              scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi"
-            android-secured:
-              scons.args: "RELEASE=false TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
-            android-secured-release:
-              scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
+              # android-unsecured-release:
+              #   scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi"
+              # android-secured:
+              #   scons.args: "RELEASE=false TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
+              # android-secured-release:
+              #   scons.args: "RELEASE=true TARGET_OS=android TARGET_ARCH=armeabi SECURED=1"
         steps:
           - script: cp -r /home/iotivity/extlibs/* $(Build.Repository.LocalPath)/extlibs
-          # Set the ANDROID_* variables so Scons has access to them
-          - script: |
-              export ANDROID_NDK_HOME=$(Build.Repository.LocalPath)/extlibs/android/sdk
-              export ANDROID_SDK_HOME=$(Build.Repository.LocalPath)/extlibs/android/sdk
-              export ANDROID_HOME=$(Build.Repository.LocalPath)/extlibs/android
-              scons $(scons.flags) $(scons.preset_args) $(scons.args)
+          - script: scons $(scons.flags) $(scons.preset_args) $(scons.args)
           - publish: "android/android_api/base/build/outputs/**"
             artifact: Android-$(name)
   - stage: Windows
