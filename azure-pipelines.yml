@@ -20,60 +20,7 @@ resources:
 
 # yamllint disable rule:line-length
 stages:
-  - stage: WindowsVS2015
-    dependsOn: []
-    jobs:
-      - job: Build
-        pool:
-          vmImage: 'vs2015-win2012r2'
-        continueOnError: true
-        variables:
-          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
-          BUILD_ARGS: "-logging -noSecurity"
-        strategy:
-          matrix:
-            windows_x86:
-              MSVC_VERSION: "14.0"
-              TARGET_ARCH: "x86"
-              windowsImage: 'vs2015-win2012r2'
-              name: "x86"
-            windows_amd64:
-              MSVC_VERSION: "14.0"
-              TARGET_ARCH: "amd64"
-              windowsImage: 'vs2015-win2012r2'
-              name: "amd64"
-        steps:
-          ## vs2015-win2012r2 is not officially supported; WTF!
-          #  So 'UsePythonVersion' will fail, even though it appears
-          #  Python is available in the image (just not in the right
-          #  place)
-          #  See:  https://github.com/microsoft/azure-pipelines-image-generation/issues/374
-          #  for details
-          # - task: UsePythonVersion@0
-          #   inputs:
-          #     versionSpec: '2.7'
-          #     addToPath: true
-          #     architecture: 'x86'
-          - powershell: |
-              Write-Host "##vso[task.prependpath]C:\Python27"
-              Write-Host "##vso[task.prependpath]C:\Python27\Scripts"
-            displayName: Add Python 2.7 to PATH
-          - script: |
-              python.exe -m pip install -U setuptools
-              python.exe -m pip install -U wheel
-              python.exe -m pip install "scons<3"
-            # TODO:
-            # sqlite
-            # gunit
-            # hippomocks
-            # rapidjson
-          - script: git clone https://github.com/intel/tinycbor.git extlibs/tinycbor/tinycbor -b v0.5.1
-          - script: git clone https://github.com/dthaler/libcoap.git extlibs/libcoap/libcoap -b IoTivity-1.4
-          - script: git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls -b mbedtls-2.4.2
-          - script: call run.bat build -arch %TARGET_ARCH% %BUILD_ARGS%
-          - publish: "out/"
-            artifact: WindowsVS2015-$(name)
-  - stage: WindowsVS2017
+  - stage: Windows
     dependsOn: []
     jobs:
       - job: Build
@@ -115,6 +62,7 @@ stages:
           - publish: "out/"
             artifact: WindowsVS2017-$(name)
   - stage: Android
+    dependsOn: []
     jobs:
       - job: Build
         container: iotivity
@@ -149,6 +97,7 @@ stages:
               testResultsFormat: "JUnit"
               testResultsFiles: "**/build/output/*.xml"
   - stage: Tizen
+    dependsOn: []
     jobs:
       - job: Build
         container: iotivity
@@ -177,6 +126,7 @@ stages:
           - publish: "out/"
             artifact: Tizen-$(name)
   - stage: Unittest
+    dependsOn: []
     jobs:
       - job: Unittest
         container: iotivity
@@ -203,6 +153,7 @@ stages:
               testResultsFormat: xUnit
               testResultsFiles: 'out/**/test_out/*.xml'
   - stage: Linux
+    dependsOn: []
     jobs:
       - job: Build
         container: iotivity
