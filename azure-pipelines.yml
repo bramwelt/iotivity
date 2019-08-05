@@ -41,11 +41,21 @@ stages:
               TARGET_ARCH: "amd64"
               windowsImage: 'vs2015-win2012r2'
         steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '2.7'
-              addToPath: true
-              architecture: 'x86'
+          ## vs2015-win2012r2 is not officially supported; WTF!
+          #  So 'UsePythonVersion' will fail, even though it appears
+          #  Python is available in the image (just not in the right
+          #  place)
+          #  See:  https://github.com/microsoft/azure-pipelines-image-generation/issues/374
+          #  for details
+          # - task: UsePythonVersion@0
+          #   inputs:
+          #     versionSpec: '2.7'
+          #     addToPath: true
+          #     architecture: 'x86'
+          - pwsh: |
+              Write-Host "##vso[task.prependpath]C:\Python27"
+              Write-Host "##vso[task.prependpath]C:\Python27\Scripts"
+            displayName: Add Python 2.7 to PATH
           - script: |
               python.exe -m pip install -U setuptools
               python.exe -m pip install -U wheel
