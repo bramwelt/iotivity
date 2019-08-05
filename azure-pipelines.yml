@@ -36,10 +36,12 @@ stages:
               MSVC_VERSION: "14.0"
               TARGET_ARCH: "x86"
               windowsImage: 'vs2015-win2012r2'
+              name: "x86"
             windows_amd64:
               MSVC_VERSION: "14.0"
               TARGET_ARCH: "amd64"
               windowsImage: 'vs2015-win2012r2'
+              name: "amd64"
         steps:
           ## vs2015-win2012r2 is not officially supported; WTF!
           #  So 'UsePythonVersion' will fail, even though it appears
@@ -86,9 +88,11 @@ stages:
             windows_x86:
               MSVC_VERSION: "14.0"
               TARGET_ARCH: "x86"
+              name: "x86"
             windows_amd64:
               MSVC_VERSION: "14.0"
               TARGET_ARCH: "amd64"
+              name: "amd64"
         steps:
           - task: UsePythonVersion@0
             inputs:
