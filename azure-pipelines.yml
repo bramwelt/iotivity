@@ -54,7 +54,7 @@ stages:
           #     versionSpec: '2.7'
           #     addToPath: true
           #     architecture: 'x86'
-          - pwsh: |
+          - powershell: |
               Write-Host "##vso[task.prependpath]C:\Python27"
               Write-Host "##vso[task.prependpath]C:\Python27\Scripts"
             displayName: Add Python 2.7 to PATH
