@@ -101,7 +101,6 @@ stages:
           - publish: "out/"
             artifact: WindowsVS2017-$(name)
   - stage: Android
-    dependsOn: Linux
     jobs:
       - job: Build
         container: iotivity
@@ -136,7 +135,6 @@ stages:
               testResultsFormat: "JUnit"
               testResultsFiles: "**/build/output/*.xml"
   - stage: Tizen
-    dependsOn: Linux
     jobs:
       - job: Build
         container: iotivity
@@ -165,7 +163,6 @@ stages:
           - publish: "out/"
             artifact: Tizen-$(name)
   - stage: Unittest
-    dependsOn: Linux
     jobs:
       - job: Unittest
         container: iotivity
@@ -192,7 +189,6 @@ stages:
               testResultsFormat: xUnit
               testResultsFiles: 'out/**/test_out/*.xml'
   - stage: Linux
-    dependsOn: Windows
     jobs:
       - job: Build
         container: iotivity
