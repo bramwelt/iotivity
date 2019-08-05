@@ -151,7 +151,7 @@ stages:
           - task: PublishTestResults@2
             inputs:
               testResultsFormat: xUnit
-              testResultsFiles: 'out/**/test_out/*.xml'
+              testResultsFiles: '**/test_out/*.xml'
   - stage: Linux
     dependsOn: []
     jobs:
@@ -160,7 +160,7 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         variables:
-          scons.preset_args: "WITH_ENV=1 VERBOSE=true ERROR_ON_WARN=1"
+          scons.preset_args: "WITH_ENV=1 VERBOSE=false ERROR_ON_WARN=1"
         strategy:
           matrix:
             linux-secured-with-java:
